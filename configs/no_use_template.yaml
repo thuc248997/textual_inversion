@@ -1,12 +1,11 @@
 dataset:
   train_data_dir: datas/origin
-  placeholder_token: <thucpd>
-  initializer_token: boy
+  placeholder_token: <nhim>
+  initializer_token: 'woman'
   learnable_property: object
   repeats: 100
-  num_vectors: 1
-  no_template: Trueme
-  
+  num_vectors: 2
+  no_template: True
   use_caption: False
   center_crop: False
 
@@ -19,7 +18,7 @@ training:
   seed: 42
   resolution: 512
   train_batch_size: 5
-  max_train_steps: 6000
+  max_train_steps: 5000
   gradient_accumulation_steps: 1
   gradient_checkpointing: False
   learning_rate: 0.0001

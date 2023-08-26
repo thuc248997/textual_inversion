@@ -1,10 +1,10 @@
 dataset:
-  train_data_dir: /home/cntt/haohq/stable_diffusion/data/nhim-512x512
+  train_data_dir: datas/general
   placeholder_token: <nhim>
-  initializer_token: woman # thay doi thu phan nay
-  learnable_property: object
+  initializer_token: 'woman' # thay doi thu phan nay
+  learnable_property: 'person'
   repeats: 100
-  num_vectors: 1
+  num_vectors: 2
   no_template: False
   use_caption: False
   center_crop: False
