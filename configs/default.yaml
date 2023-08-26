@@ -14,11 +14,11 @@ training:
   save_as_full_pipeline: False
   pretrained_model_name_or_path: runwayml/stable-diffusion-v1-5
   tokenizer_name: openai/clip-vit-large-patch14
-  output_dir: exp_thucpd
+  output_dir: exp_thucpd_default
   seed: 42
   resolution: 512
   train_batch_size: 5
-  max_train_steps: 6000
+  max_train_steps: 5000
   gradient_accumulation_steps: 1
   gradient_checkpointing: False
   learning_rate: 0.0001 # tim hieu them ve learning rate

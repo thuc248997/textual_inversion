@@ -1,3 +1,4 @@
+import argparse
 from diffusers import StableDiffusionPipeline
 import torch
 
@@ -25,7 +26,7 @@ def generate_images_with_seeds(text_to_image_model, initial_seed, num_images, te
         generator_model.manual_seed(seed)
         generated_image = generate_single_image(text_to_image_model, text_prompt, num_inference_steps,
                                                 guidance_scale, generator_model)
-        generated_image.save("{}_{}.png".format(experiment_name, seed))
+        generated_image.save("{}/{}.png".format(experiment_name, seed))
 
 def generate_single_image(text_to_image_model, text_prompt, num_inference_steps=50,
                           guidance_scale=7.5, generator_model=None):
@@ -50,22 +51,28 @@ def generate_single_image(text_to_image_model, text_prompt, num_inference_steps=
     ).images[0]
 
 if __name__ == "__main__":
+    # Tạo hình ảnh dựa trên prompt cho từng seed
+    passer = argparse.ArgumentParser()
+    passer.add_argument("--name_exp", help="Config to train textual inversion")
+    passer.add_argument("--prompt", help="Prompt to generate image")
+    passer.add_argument("--checkpoint", help="Checkpoint to load model")
+    args = passer.parse_args()
+    
     # Khởi tạo model và pipe
     model_id = "runwayml/stable-diffusion-v1-5"
     pipe = StableDiffusionPipeline.from_pretrained(
         model_id, torch_dtype=torch.float16, use_safetensors=True
     ).to("cuda")
-    pipe.load_textual_inversion("exp_thucpd/learned_embeds.bin")
+    pipe.load_textual_inversion(args.checkpoint)
     
     # Khởi tạo generator
-    generator = torch.Generator(device="cuda")
-
-    # Tạo hình ảnh dựa trên prompt cho từng seed
+    generator_model = torch.Generator(device="cuda")
+    
     generate_images_with_seeds(
         pipe,
-        init_seed=42,
-        num_image=5,
-        prompt="a photo of <nhim> ridding a unicorn",
-        name="exp_thucpd",
-        generator=generator,
+        initial_seed=42,
+        num_images=5,
+        text_prompt=args.prompt,
+        experiment_name=args.name_exp,
+        generator_model=generator_model,
     )
