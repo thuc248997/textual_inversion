@@ -1,0 +1,8 @@
+tensorboard
+torchvision
+transformers
+diffusers["torch"]
+ftfy
+accelerate
+omegaconf
+xformers
