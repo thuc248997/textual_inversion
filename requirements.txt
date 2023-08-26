@@ -1,8 +1,9 @@
 tensorboard
 torchvision
 transformers
-diffusers["torch"]
+diffusers
 ftfy
 accelerate
 omegaconf
 xformers
+safetensors
