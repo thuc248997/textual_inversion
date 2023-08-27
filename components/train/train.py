@@ -107,7 +107,7 @@ These are textual inversion adaption weights for {base_model}. You can find some
 
 
 def log_validation(
-    text_encoder, tokenizer, unet, vae, args, accelerator, weight_dtype, epoch
+    text_encoder, tokenizer, unet, vae, args, accelerator, weight_dtype, epoch, global_step
 ):
     logger.info(
         f"Running validation... \n Generating {args.validate.num_validation_images} images with prompt:"
@@ -144,6 +144,10 @@ def log_validation(
                 generator=generator,
             ).images[0]
         images.append(image)
+    
+    # save to logdir
+    for image_index, image in enumerate(images):
+        image.save(os.path.join(args.training.output_dir, f"eval_step_{global_step}_{image_index}.png"))
 
     for tracker in accelerator.trackers:
         if tracker.name == "tensorboard":
@@ -303,7 +307,7 @@ class TextualInversionDataset(Dataset):
             text = placeholder_string
         elif self.use_caption:
             caption_path = os.path.join(
-                "datas/caption_fullbody", img_path.split("/")[-1].replace(".jpg", ".caption")
+                "data/caption_white", img_path.split("/")[-1].replace(".jpg", ".txt")
             )
             text = open(caption_path, "r").read().strip()
         else:
@@ -732,6 +736,7 @@ def main(config_file):
                             accelerator,
                             weight_dtype,
                             epoch,
+                            global_step
                         )
 
             logs = {"loss": loss.detach().item(), "lr": lr_scheduler.get_last_lr()[0]}

@@ -4,7 +4,7 @@ dataset:
   initializer_token: woman # thay doi thu phan nay
   learnable_property: object
   repeats: 100
-  num_vectors: 5
+  num_vectors: 10
   no_template: False
   use_caption: False
   center_crop: False

@@ -1,10 +1,10 @@
 dataset:
-  train_data_dir: datas/general #truyen trong value
-  placeholder_token: <nhim>
-  initializer_token: woman
+  train_data_dir: data/background_white #truyen trong value
+  placeholder_token: <thucpd>
+  initializer_token: man
   learnable_property: object
   repeats: 100
-  num_vectors: 5
+  num_vectors: 2
   no_template: False
   use_caption: True
   center_crop: False
@@ -14,14 +14,14 @@ training:
   save_as_full_pipeline: False
   pretrained_model_name_or_path: runwayml/stable-diffusion-v1-5
   tokenizer_name: openai/clip-vit-large-patch14
-  output_dir: exp_thucpd_with_caption
+  output_dir: exp_thucpd_with_caption_rm_background
   seed: 42
   resolution: 512
-  train_batch_size: 10
+  train_batch_size: 5
   max_train_steps: 5000
   gradient_accumulation_steps: 1
   gradient_checkpointing: False
-  learning_rate: 5.0e-04
+  learning_rate: 0.0001
   scale_lr: False
   lr_scheduler: constant
   lr_warmup_steps: 500
@@ -40,6 +40,6 @@ training:
 
 
 validate:
-  validation_prompt: a photo of <nhim> riding a unicorn in a cornfield 
+  validation_prompt: <thucpd> is riding a unicorn in a corn field.
   num_validation_images: 4
   validation_steps: 250
