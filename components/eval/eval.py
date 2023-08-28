@@ -5,7 +5,31 @@ from torch.nn.functional import cosine_similarity
 from torchvision import transforms
 import numpy as np
 import clip
+from diffusers import StableDiffusionPipeline
 
+def generate_image(
+    pipe,
+    init_seed,
+    num_image,
+    prompt,
+    num_inference_steps=50,
+    guidance_scale=7.5,
+    generator=None,
+    name="exp",
+):
+    os.makedirs(name, exist_ok=True)
+    for i in range(num_image):
+        seed = init_seed + i
+        torch.manual_seed(seed)
+        generator.manual_seed(seed)
+        image = pipe(
+            prompt,
+            num_inference_steps=num_inference_steps,
+            guidance_scale=guidance_scale,
+            generator=generator,
+        ).images[0]
+        image.save("{}/{}.png".format(name, seed))
+        
 
 class CLIPEvaluator:
     def __init__(self, device, clip_model="ViT-B/32") -> None:
@@ -147,13 +171,35 @@ def read_dir_image(path: str) -> list:
 
 
 if __name__ == "__main__":
+    list_model = os.listdir("/content/sd-tools/textual_inversion_training")
     clip_eval = CLIPEvaluator(device="cuda")
-    src_images = read_dir_image("data")
-    generate_images = read_dir_image("generate")
-    print(
-        clip_eval.image_to_image_similarity(
-            src_images=src_images, generated_images=generate_images
+    scores = {}
+    for ti_model in list_model:
+        model_id = "runwayml/stable-diffusion-v1-5"
+        if "fixed_bg" in ti_model:
+            src_images = read_dir_image("/content/sd-tools/datas/keep_bg")
+        else:
+            src_images = read_dir_image("/content/sd-tools/datas/origin")
+        folder_image = f"eval_{ti_model.split('.')[0]}"
+        pipe = StableDiffusionPipeline.from_pretrained(
+            model_id, torch_dtype=torch.float16, use_safetensors=True
+        ).to("cuda")
+        pipe.load_textual_inversion(os.path.join("/content/sd-tools/textual_inversion_training", ti_model))
+
+        generator = torch.Generator(device="cuda")
+
+        generate_image(
+            pipe,
+            init_seed=42,
+            num_image=64,
+            prompt="a photo of <thupc>",
+            name=folder_image,
+            generator=generator,
         )
-    )
-    text = "a photo of"
-    print(clip_eval.text_to_image_similarity(text=text, generated_images=generate_images))
+        generated_image = read_dir_image(folder_image)
+        img_similarity = clip_eval.img_to_img_similarity(src_images=src_images, generated_images=generated_image)
+        txt_similarity = clip_eval.txt_to_img_similarity(text="a photo of", generated_images=generated_image)
+        scores[ti_model] = {
+            "Image Similarity": img_similarity,
+            "Text Similarity": txt_similarity
+        }

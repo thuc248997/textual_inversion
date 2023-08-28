@@ -1,21 +1,21 @@
 dataset:
-  train_data_dir: data/background_white #truyen trong value
-  placeholder_token: <thucpd>
+  train_data_dir: data/background_white
+  placeholder_token: <S*>
   initializer_token: man
   learnable_property: object
   repeats: 100
-  num_vectors: 2
-  no_template: False
+  num_vectors: 1
+  no_template: True
   use_caption: True
   center_crop: False
 
 training:
-  save_steps: 500
+  save_steps: 1000
   save_as_full_pipeline: False
   pretrained_model_name_or_path: runwayml/stable-diffusion-v1-5
   tokenizer_name: openai/clip-vit-large-patch14
-  output_dir: exp_thucpd_with_caption_rm_background
-  seed: 42
+  output_dir: exp5
+  seed: 0
   resolution: 512
   train_batch_size: 5
   max_train_steps: 5000
@@ -40,6 +40,6 @@ training:
 
 
 validate:
-  validation_prompt: <thucpd> is riding a unicorn in a corn field.
+  validation_prompt: a photo of <S*>, a unicorn, a corn field. 
   num_validation_images: 4
   validation_steps: 250

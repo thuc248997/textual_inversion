@@ -1,28 +1,28 @@
 dataset:
-  train_data_dir: data/general
-  placeholder_token: <nhim>
-  initializer_token: woman
+  train_data_dir: data/original
+  placeholder_token: <S*>
+  initializer_token: man
   learnable_property: object
   repeats: 100
-  num_vectors: 10
+  num_vectors: 1
   no_template: True
   use_caption: False
   center_crop: False
 
 training:
-  save_steps: 1000
+  save_steps: 200
   save_as_full_pipeline: False
   pretrained_model_name_or_path: runwayml/stable-diffusion-v1-5
   tokenizer_name: openai/clip-vit-large-patch14
-  output_dir: exp_nhim_no_use_template
-  seed: 42
+  output_dir: exp_thucpd_no_use_template_original
+  seed: 0
   resolution: 512
   train_batch_size: 5
   max_train_steps: 5000
   gradient_accumulation_steps: 1
   gradient_checkpointing: False
-  learning_rate: 0.0005
-  scale_lr: True
+  learning_rate: 0.0001
+  scale_lr: False
   lr_scheduler: constant
   lr_warmup_steps: 500
   lr_num_cycles: 1
@@ -40,6 +40,6 @@ training:
 
 
 validate:
-  validation_prompt: <nhim> riding a unicorn in a cornfield 
+  validation_prompt: a photo of <S*>, riding a unicorn, in a corn field
   num_validation_images: 4
   validation_steps: 250

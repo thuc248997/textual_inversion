@@ -29,15 +29,15 @@ if __name__ == "__main__":
     pipe = StableDiffusionPipeline.from_pretrained(
         model_id, torch_dtype=torch.float16, use_safetensors=True
     ).to("cuda")
-    pipe.load_textual_inversion("exp_thucpd_with_caption_rm_background/learned_embeds.bin")
+    pipe.load_textual_inversion("/home/sgpu/haohq/test/xti_hoanglv_exp_thupd_caption_black/learned_embeds-steps-1600.bin")
 
     generator = torch.Generator(device="cuda")
 
     generate_image(
         pipe,
-        init_seed=42,
-        num_image=5,
-        prompt="<thucpd>",
-        name="exp_thucpd_with_caption_rm_background",
+        init_seed=40,
+        num_image=4,
+        prompt="a <thucpd> riding a white unicorn in a cornfield.",
+        name="exp_thucpd_no_use_template_original",
         generator=generator,
     )
